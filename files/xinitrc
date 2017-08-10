@@ -1,0 +1,14 @@
+#eval $(gpg-agent --daemon)
+hsetroot -fill ~/Pictures/archived_pics/Konachan.com\ -\ 151824\ benitama\ landscape\ moriya_suwako\ scenic\ touhou\ water\ waterfall.jpg
+#hsetroot -solid "#181818"
+xbindkeys
+xmodmap ${HOME}/.Xmodmap
+xsetroot -cursor_name left_ptr
+setxkbmap -option compose:menu #-layout dvorak
+xrdb ~/.Xresources
+urxvtd -q -f -o
+#sh ~/.mutt/notify.sh &
+#~/.cabal/bin/arbtt-capture &
+xcompmgr &
+exec xmonad
+#exec snex9x-gtk
