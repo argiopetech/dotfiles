@@ -1,0 +1,19 @@
+set ai
+set smartindent
+set number
+set t_Co=256
+
+set expandtab
+set ts=4
+set shiftwidth=4
+
+runtime plugin/RainbowParenthsis.vim
+
+inoremap <F9> <C-O>za
+nnoremap <F9> za
+onoremap <F9> <C-C>za
+vnoremap <F9> zf
+
+nnoremap <F2> :set nonumber!<CR>:set ai!<CR>:set smartindent!<CR>
+
+nnoremap <F3> :set foldmarker={,}<CR>:set foldmethod=marker<CR>

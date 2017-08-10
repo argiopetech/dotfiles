@@ -1,0 +1,144 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+if [ -f /etc/profile ]; then
+    . /etc/profile
+fi
+
+# mutt background fix
+# COLORFGBG="default;default"
+
+# User specific aliases and functions
+PATH=${HOME}/.local/bin:./cabal-dev/bin:$HOME/.cabal/bin:$PATH
+export PATH
+
+export TEXINPUTS=".:$HOME/Documents/latex/:"
+export BIBINPUTS=".:$HOME/Documents/bibtex/:"
+
+export WINEARCH=win32 # Let's run wine as 32-bit
+
+#if [ -f /media/428A32E58A32D4DF/Xilinx/12.2/ISE_DS/setup-xlnx ]; then
+#    source /media/428A32E58A32D4DF/Xilinx/12.2/ISE_DS/setup-xlnx 2>&1 > /dev/null
+#fi
+
+alias l.="ls -d .*"
+alias ll="ls -l"
+alias mpv-anime="mpv --ass --embeddedfonts --sub-scale 0.7 --really-quiet --vd-lavc-fast"
+alias m='mpv'
+alias repos='find / -name ".git" -type d 2>/dev/null'
+alias emacs-cli="emacs --no-desktop"
+alias e="emacs -nw"
+alias emacsclient="emacsclient -c"
+alias stylish-haskell="stylish-haskell -c ~/.stylish-haskell.yml"
+alias pretty-core="ghc-core --no-asm --no-cast -- -dsuppress-var-kinds -dsuppress-type-applications -dsuppress-uniques"
+
+#function emacs() {
+#    if `bash ~/parent_find.sh .stack-work > /dev/null`; then
+#        stack exec -- emacs $@
+#    else
+#        /usr/bin/emacs $@
+#    fi
+#}
+
+# unregister broken GHC packages. Run this a few times to resolve dependency rot in installed packages.
+# ghc-pkg-clean -f cabal/dev/packages*.conf also works.
+function ghc-pkg-clean() {
+    for p in `ghc-pkg check $* 2>&1  | grep problems | awk '{print $6}' | sed -e 's/:$//'`
+    do
+        echo unregistering $p; ghc-pkg $* unregister $p
+    done
+}
+ 
+# remove all installed GHC/cabal packages, leaving ~/.cabal binaries and docs in place.
+# When all else fails, use this to get out of dependency hell and start over.
+function ghc-pkg-reset() {
+    read -p 'erasing all your user ghc and cabal packages - are you sure (y/n) ? ' ans
+    test x$ans == xy && ( \
+        echo 'erasing directories under ~/.ghc'; rm -rf `find ~/.ghc -maxdepth 1 -type d`; \
+        echo 'erasing ~/.cabal/lib'; rm -rf ~/.cabal/lib; \
+        echo 'erasing ~/.cabal/packages'; rm -rf ~/.cabal/packages; \
+        echo 'erasing ~/.cabal/share'; rm -rf ~/.cabal/share; \
+        )
+}
+
+function hsless() {
+    cat "${1}" | hscolor | less
+}
+ 
+alias cabalupgrades="cabal list --installed  | egrep -iv '(synopsis|homepage|license)'"
+alias jpegencode='mencoder -nosound "mf:/$1" -mf w=1920:h=1080:type=jpg:fps=10 -ovc lavc -lav
+copts vcodec=mpeg4:vbitrate=2160000 -o $2'
+alias mame='sdlmame -gl_glsl -video opengl -rp ~/.advance/rom/ -np 2 -nogl_vbo -nogl_pbo -waitvsync -mt'
+
+alias headphones='pacmd set-sink-port alsa_output.pci-0000_00_1b.0.analog-stereo analog-output-headphones'
+alias speakers='pacmd set-sink-port alsa_output.pci-0000_00_1b.0.analog-stereo analog-output-speaker'
+
+GPG_TTY=$(tty)
+export GPG_TTY
+
+alias dc='popd'
+alias flip='pushd'
+
+function cd()
+{
+  if [ $# -eq 0 ]; then
+    DIR="${HOME}"
+  else
+    DIR="$1"
+  fi
+
+  builtin pushd "${DIR}" > /dev/null
+}
+
+prefix() {
+    if [ -z "$1" ]; then
+        echo "${HOME}/.wine/"
+    else
+        echo "${HOME}/.local/share/wineprefixes/$1"
+    fi
+}
+
+lsp() {
+    ls $* "${HOME}/.local/share/wineprefixes"
+}
+
+run() {
+    WINEPREFIX="$(prefix $1)" wine cmd /c "C:\\run-$1.bat"
+}
+
+complete -W "$(lsp)" prefix run
+
+PERL_MB_OPT="--install_base \"/home/elliot/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/elliot/perl5"; export PERL_MM_OPT;
+
+# Show the currently running command in the terminal title:
+# http://www.davidpashley.com/articles/xterm-titles-with-bash.html
+show_command_in_title_bar()
+{
+    case "$BASH_COMMAND" in
+        *\033]0*)
+            # The command is trying to set the title bar as well;
+            # this is most likely the execution of $PROMPT_COMMAND.
+            # In any case nested escapes confuse the terminal, so don't
+            # output them.
+            ;;
+        *)
+            echo -ne "\033]0;${USER}@${HOSTNAME%%.*}: ${BASH_COMMAND}\007"
+            ;;
+    esac
+}
+
+#trap show_command_in_title_bar DEBUG;
+
+export SCIPY_PIL_IMAGE_VIEWER=eog
+
+export EC2_PRIVATE_KEY=~/.ssh/pk-UY653PEPKS5XTNDA7NO27TR4SONMZ2SW.pem
+export EC2_CERT=~/.ssh/cert-UY653PEPKS5XTNDA7NO27TR4SONMZ2SW.pem
+# BEST ALIAS EVER
+alias fucking='sudo'
+
+. .bash_prompt

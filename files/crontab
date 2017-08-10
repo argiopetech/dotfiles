@@ -1,0 +1,4 @@
+#Mins  Hours  Days   Months  Day of the week
+0      *      *      *       *  offlineimap
+*/5    *      *      *       *  offlineimap -qf 'INBOX,haskell-libraries,[Gmail]/Trash'
+*/5    *      *      *       *  /usr/local/bin/msmtp-runqueue.sh # 2>&1 | /usr/bin/logger

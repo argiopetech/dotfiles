@@ -1,0 +1,210 @@
+(require 'package)
+;(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+;                        ("marmalade" . "http://marmalade-repo.org/packages/")
+;                        ("melpa" . "http://melpa.org/packages/")))
+(package-initialize)
+;(package-refresh-contents)
+
+(package-install 'intero)
+(setq flycheck-check-syntax-automatically '(mode-enabled save))
+
+;; Report to the window manager
+(setq frame-title-format "%f")
+(setq ghc-ghc-options '("-fdefer-type-errors"))
+
+(add-to-list 'auto-mode-alist '("/mutt" . flyspell-mode))
+
+;; Regular paths
+(add-to-list 'load-path "~/.emacs.d/loadables")
+;(add-to-list 'load-path "~/.emacs.d/shm/")
+;(add-to-list 'load-path "~/.emacs.d/ghc-mod/") ; GHC-mod directory
+
+;; Theme paths
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+
+;; Load extensions
+(load "~/.emacs.d/flymake.el")
+(load "~/.emacs.d/cython-mode.el")
+
+;; Setup variables
+(setq inhibit-default-init t)
+(setq indent-tabs-mode nil)
+(setq c-toggle-hungry-state t)
+(setq line-number-mode    t)
+(setq column-number-mode  t)
+(fset 'yes-or-no-p 'y-or-n-p)
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(setq-default fill-column 80)
+
+;; Default theme
+(if window-system
+    (load-theme `zenburn t)
+    (load-theme `zenburn-console t))
+
+;; Setup auto complete
+(require 'auto-complete-config)
+(ac-config-default)
+
+;; Setup structured-haskell-mode
+;(require 'shm)
+
+;; Setup clang integration
+(require 'auto-complete-clang)
+(setq clang-completion-suppress-error 't)
+
+(defun my-c-mode-common-hook()
+ ;; (setq ac-auto-start nil)
+  (setq ac-expand-on-auto-complete nil)
+  (setq ac-quick-help-delay 0.3)
+  (define-key c-mode-base-map (kbd "M-/") 'ac-complete-clang)
+  (lambda () (subword-mode 1))
+  )
+
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+;; Setup Haskell
+(add-to-list 'Info-default-directory-list "~/.emacs.d/haskell-mode/")
+;(autoload 'ghc-init "ghc" nil t)
+;(add-hook 'haskell-mode-hook (lambda () (ghc-init) (flymake-mode) (turn-on-haskell-indent) (turn-on-haskell-doc-mode) (imenu-add-menubar-index)))
+;(add-hook 'haskell-mode-hook (lambda () (ghc-init) (imenu-add-menubar-index) (flyspell-prog-mode) (setq-default fill-column 125)))
+(add-hook 'haskell-mode-hook (lambda () (intero-mode) (imenu-add-menubar-index) (flyspell-prog-mode) (setq-default fill-column 125)))
+
+;; Setup Agda
+;(load-file (let ((coding-system-for-read 'utf-8))
+;                (shell-command-to-string "agda-mode locate")))
+
+
+;; Outline mode
+(outline-minor-mode 1)
+(global-set-key [M-up] 'hide-sublevels)
+(global-set-key [M-down] 'show-all)
+
+
+;; Custom key commands
+(global-set-key (kbd "<print>") 'goto-line) ;Scroll Lock key
+
+
+;; Whitespace setup
+(require 'whitespace)
+(add-hook 'c-mode-hook (function (lambda () (whitespace-mode t))))
+(add-hook 'c++-mode-hook (function (lambda () (whitespace-mode t))))
+(add-hook 'java-mode-hook (function (lambda () (whitespace-mode t))))
+(add-hook 'haskell-mode-hook (function 
+                               (lambda () (whitespace-mode t)
+                                          ))) ;(set-input-method "Agda")
+;                                          (set-fill-column 80)
+
+
+;; Yesod setup
+;;(require 'shakespeare-mode)
+;(setq auto-mode-alist (cons '("\\.julius$" . javascript-mode) auto-mode-alist))
+;(setq auto-mode-alist (cons '("\\.lucius$" . css-mode) auto-mode-alist))
+;(setq auto-mode-alist (cons '("\\.hamlet$" . html-mode) auto-mode-alist))
+
+
+;; CMake setup
+; Add cmake listfile names to the mode list.
+(setq auto-mode-alist
+	  (append
+	   '(("CMakeLists\\.txt\\'" . cmake-mode))
+	   '(("\\.cmake\\'" . cmake-mode))
+	   auto-mode-alist))
+
+(autoload 'cmake-mode "~/.emacs.d/cmake-mode.el" t)
+
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+(require 'flymake)
+
+(defun flymake-clang-c++-init ()
+  (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                     'flymake-create-temp-inplace))
+         (local-file (file-relative-name
+                      temp-file
+                      (file-name-directory buffer-file-name))))
+    (list "clang++" (list "-Wall" "-pedantic" "-std=c++11" "-fsyntax-only" "-fno-show-column" "-fno-color-diagnostics" local-file))))
+
+(defun flymake-clang-c++-load ()
+  (unless (eq buffer-file-name nil)
+    (add-to-list 'flymake-allowed-file-name-masks
+                 '("\\.cpp\\'" flymake-clang-c++-init))
+    (add-to-list 'flymake-allowed-file-name-masks
+                 '("\\.cc\\'" flymake-clang-c++-init))
+    (add-to-list 'flymake-allowed-file-name-masks
+                 '("\\.h\\'" flymake-clang-c++-init))
+    (flymake-mode f)))
+
+(add-hook 'c++-mode-hook 'flymake-clang-c++-load)
+
+(global-set-key (kbd "C-c d") 'insert-date)
+
+(defun insert-date ()
+  "Insert the current date. With prefix-argument, use ISO format. With
+   two prefix arguments, write out the day and month name."
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d")))
+
+;; Automatically set variables
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(blink-cursor-mode nil)
+ '(c-basic-offset 4)
+ '(c-default-style
+   (quote
+    ((c-mode . "bsd")
+     (c++-mode . "bsd")
+     (java-mode . "java")
+     (awk-mode . "awk")
+     (other . "gnu"))))
+ '(c-macro-preprocessor "clang -x c++ -E -C -")
+ '(c-offsets-alist
+   (quote
+    ((statement-case-open . 0)
+     (substatement-open . 0)
+     (case-label . +)
+     (access-label . -2))))
+ '(custom-safe-themes
+   (quote
+    ("e7381667a4ed6c1d7f1779811024394f0c13a65410711a75989cf7d95561e79a" "94a075bc3880c9855a75f92682b1028ffb7aedaeb6063665e1d97b2c41275d8c" "9758eb3d14cd3df882df3de51720e7815b6dba756ab678626c5a14865f69e75c" "cb7b0bf0d8012a6f7c530a556b9b0369927568ead5b6308f303063f2f02d26f1" "b60bac121c159bbe91f8b7e33ef365be6d3ff4425f80484b0abdf2ccf0fd9563" "cdc90db3996dcc3cf4f48a8a9464513da4e3711ddf02ffbd7d886130e48669f1" "a8bb49da77d0f8c237f858ee24018a63a8b7af320dd7af776296c80f9d80783b" "1a74b6f321e1295c618f9da82da4aa575eb472909432246b603fd448dd4ed058" "bf7ed640479049f1d74319ed004a9821072c1d9331bc1147e01d22748c18ebdf" "be7eadb2971d1057396c20e2eebaa08ec4bfd1efe9382c12917c6fe24352b7c1" default)))
+ '(ecb-options-version "2.40")
+ '(flymake-no-changes-timeout 3600)
+ '(flymake-start-syntax-check-on-newline nil)
+ '(haskell-indent-after-keywords
+   (quote
+    (("where" 2 0)
+     ("of" 2)
+     ("do" 4)
+     ("in" 2 0)
+     ("{" 2)
+     "if" "then" "else" "let")))
+ '(haskell-indent-spaces 4)
+ '(haskell-indent-thenelse 2)
+ '(indent-tabs-mode nil)
+ '(inferior-haskell-find-project-root t)
+ '(inhibit-startup-screen t)
+ '(jit-lock-defer-time nil)
+ '(make-backup-files nil)
+ '(org-agenda-files (quote ("~/Projects/upenn/todo.org")))
+ '(org-hierarchical-todo-statistics nil)
+ '(package-selected-packages (quote (shakespeare-mode intero)))
+ '(safe-local-variable-values
+   (quote
+    ((haskell-indent-spaces . 4)
+     (haskell-process-use-ghci . t)
+     (hamlet/basic-offset . 4))))
+ '(show-paren-mode t)
+ '(speedbar-default-position (quote right))
+ '(whitespace-action nil)
+ '(whitespace-line-column 800))
+ 
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

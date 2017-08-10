@@ -1,0 +1,174 @@
+# Paths ----------------------------------------------
+set folder           = ~/.mutt               # mailbox location
+set alias_file       = ~/.mutt/alias         # where to store aliases
+set header_cache     = ~/.mutt/cache/headers # where to store headers
+#set message_cachedir = ~/.mutt/cache/bodies  # where to store bodies
+#set certificate_file = ~/.mutt/certificates  # where to store certs
+set mailcap_path     = ~/.mutt/mailcap       # entries for filetypes
+set tmpdir           = ~/.mutt/temp          # where to keep temp files
+set signature        = ~/.mutt/sig           # my signature file
+
+# Basic Options --------------------------------------
+set wait_key = no        # shut up, mutt
+set mbox_type = Maildir  # mailbox type
+set timeout = 60         # idle time before scanning
+set mail_check = 5       # minimum time between scans
+unset move               # gmail does that
+set delete               # don't ask, just do
+unset confirmappend      # don't ask, just do!
+set quit                 # don't ask, just do!!
+unset mark_old           # read/new is good enough for me
+set pipe_decode          # strip headers and eval mimes when piping
+set thorough_search      # strip headers and eval mimes before searching
+set reverse_name         # Set from: based on to: in replies
+
+# Sidebar Patch --------------------------------------
+set sidebar_delim   = '  │'
+set sidebar_visible = yes
+set sidebar_width   = 20
+set sidebar_format  = "%B%> %?N?%N?"
+set sidebar_shortpath = yes
+color sidebar_new color221 color233
+
+# Status Bar -----------------------------------------
+set status_chars  = " *%A"
+set status_format = "───[ Folder: %f ]───[%r%m messages%?n? (%n new)?%?d? (%d to delete)?%?t? (%t tagged)? ]───%>─%?p?( %p postponed )?───"
+
+# Header Options -------------------------------------
+ignore *                                # ignore all headers
+unignore from: to: cc: date: subject:   # show only these
+unhdr_order *                           # some distros order things by default
+hdr_order from: to: cc: date: subject:  # and in this order
+
+# Account Settings -----------------------------------
+
+# Default inbox.
+set spoolfile = "+argiopeweb/INBOX"
+
+# Alternate email addresses.
+# alternates sjl@pculture.org still\.?life@gmail.com steve@ladyluckblues.com steve@pculture.org
+#alternates elliot.robinson@argiopetech.com
+alternates argiopeweb@gmail.com
+ 
+# Mailboxes to show in the sidebar.
+mailboxes +argiopeweb/INBOX \
+          +argiopeweb/archive \
+          +argiopeweb/sent \
+          +argiopeweb/drafts \
+          +argiopeweb/BASE \
+          +argiopeweb/CHOP \
+          +argiopeweb/Purchases \
+          +argiopeweb/GHC-Devs \
+          +argiopeweb/haskell-libraries \
+          +argiopeweb/Haskell-Cafe \
+          +argiopeweb/FreeBSD-hackers \
+          +argiopeweb/FreeBSD-questions \
+          +argiopeweb/Experiment \
+          +argiopeweb/trash
+
+# Other special folders.
+set mbox      = "+argiopeweb/archive"
+set postponed = "+argiopeweb/drafts"
+
+# Index View Options ---------------------------------
+set date_format = "%m/%d/%y"
+set index_format = "[%Z]  %D  %-20.20F  %s"
+set sort = threads                         # like gmail
+set sort_aux = reverse-last-date-received  # like gmail
+set uncollapse_jump                        # don't collapse on an unread message
+set sort_re                                # thread based on regex
+set reply_regexp = "^(([Rr][Ee]?(\[[0-9]+\])?: *)?(\[[^]]+\] *)?)*"
+
+folder-hook . "exec collapse-all"          # Threads default closed
+folder-hook ~/.cache/notmuch/mutt/results "exec collapse-all"
+
+# Index Key Bindings ---------------------------------
+bind index <tab>     collapse-thread
+macro pager <tab>    "<exit><collapse-thread>"
+
+bind index <backtab> collapse-all
+
+# Ctrl-R to mark all as read
+macro index \Cr "T~U<enter><tag-prefix><clear-flag>N<untag-pattern>~T<enter>" "mark all messages as read"
+
+# Delete threads using the "move to trash" method
+macro index \Cd "<tag-thread><tag-prefix><save-message>=argiopeweb/trash<enter><untag-pattern>~T<enter>" "move thread to trash"
+macro pager \Cd "<exit><tag-thread><tag-prefix><save-message>=argiopeweb/trash<enter><untag-pattern>~T<enter>" "move thread to trash"
+
+# Sync email
+macro index,pager O "<shell-escape>msmtp-runqueue.sh; pkill -9 offlineimap; offlineimap<enter>"                           "run offlineimap to sync all mail"
+macro index,pager o "<shell-escape>msmtp-runqueue.sh; pkill -9 offlineimap; offlineimap -qf 'INBOX,[Gmail]/Trash'<enter>" "run offlineimap to sync inbox"
+
+# Saner copy/move dialogs
+macro index C "<copy-message>?<toggle-mailboxes>" "copy a message to a mailbox"
+macro index M "<save-message>?<toggle-mailboxes>" "move a message to a mailbox"
+
+# Sidebar Navigation ---------------------------------
+bind index,pager \eOb  next-thread
+bind index,pager \eOa  previous-thread
+
+bind index,pager \e[6^ sidebar-next
+bind index,pager \e[5^ sidebar-prev
+bind index,pager \eOc  sidebar-open
+
+# Sorting
+bind index \\ sort-mailbox
+
+# Trash Management -----------------------------------
+macro index \Ct "<save-message>=argiopeweb/trash<enter>"
+macro pager d "<exit><save-message>=argiopeweb/trash<enter>"
+macro pager D "<save-message>=argiopeweb/trash<enter>"
+#folder-hook =argiopeweb/INBOX 'macro index,pager A <delete-message>'
+
+# Pager View Options ---------------------------------
+set pager_index_lines = 10 # number of index lines to show
+set pager_context = 3      # number of context lines to show
+set pager_stop             # don't go to next message automatically
+set menu_scroll            # scroll in menus
+# set tilde                  # show tildes like in vim
+unset markers              # no ugly plus signs
+set smart_wrap
+
+set quote_regexp = "^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
+alternative_order text/plain text/enriched text/html
+
+# View attachments properly.
+bind attach <return> view-mailcap
+
+macro pager \Cu "|urlview<enter>" "call urlview to open links"
+
+set editor = "emacs -nw"
+
+set from     = "Elliot Robinson <elliot.robinson@argiopetech.com>"
+#set from     = "Elliot Robinson <argiopeweb@gmail.com>"
+#set sendmail = "msmtp -a argiopeweb"
+set sendmail = "msmtp-enqueue.sh -a argiopeweb"
+set sendmail_wait = 0
+unset record
+
+set use_from
+
+# Contacts -------------------------------------------
+#set query_command="goobook query '%s'"
+set query_command="abook --mutt-query '%s'"
+macro index,pager @ "|abook --add-email-quiet" 'add sender to abook'
+
+# PGP/GPG --------------------------------------------
+set pgp_sign_as = 9FEDE59A
+# set crypt_autosign     # Always sign
+set crypt_replysign    # Sign in reply to signed mail
+# set crypt_autoencrypt  # Always encrypt
+set crypt_replyencrypt # Encrypt in reply to encrypted mail
+
+# Editor/compose -------------------------------------
+unset sig_dashes
+bind editor <Tab> complete-query
+bind editor \Ct   complete
+bind compose f     edit-from
+
+# Colors ---------------------------------------------
+source ~/.mutt/colors
+
+source ~/.mutt/gpg.rc
+source ~/.mutt/groups
+source /usr/local/share/notmuch-mutt/notmuch-mutt.rc
