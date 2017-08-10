@@ -1,0 +1,9 @@
+# "/usr/bin/amixer -q sset Speaker toggle"
+"pulseaudio-ctl mute"
+    XF86AudioMute
+# "/usr/bin/amixer -q sset Master unmute; /usr/bin/amixer -q sset Master 5-"
+"pulseaudio-ctl down"
+    XF86AudioLowerVolume
+# "/usr/bin/amixer -q sset Master unmute; /usr/bin/amixer -q sset Master 5+"
+"pulseaudio-ctl up"
+    XF86AudioRaiseVolume
