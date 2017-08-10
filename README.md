@@ -1,5 +1,6 @@
 # My .files
-** USE AT YOUR OWN RISK!!! **
+
+**USE AT YOUR OWN RISK!!!**
 
 These are the basic configuration files I use on my local machines. They are subject to change rapidly and without warning, potentially breaking other things. I highly recommend that you review all files prior to using any of them.
 
