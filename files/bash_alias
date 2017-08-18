@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Convenient 'ls' abbreviations
+alias l.="ls -d .*"
+alias ll="ls -l"
+
+# Convenient 'git' abbreviations
+alias add="git add"
+alias commit="git commit"
+
+alias m='mpv'
+
+
+alias repos='find / -name ".git" -type d 2>/dev/null'
+
+# Runs emacs in terminal mode
+alias e="emacs -nw"
+
+# Pretty-prints non-optimized core from GHC
+# Requires ghc-core executable to be installed from e.g., Hackage
+alias pretty-core="ghc-core --no-asm --no-cast -- -dsuppress-var-kinds -dsuppress-type-applications -dsuppress-uniques"
+
+# Sets default sink for PulseAudio on laptop
+alias headphones='pacmd set-sink-port alsa_output.pci-0000_00_1b.0.analog-stereo analog-output-headphones'
+alias speakers='pacmd set-sink-port alsa_output.pci-0000_00_1b.0.analog-stereo analog-output-speaker'
+
+# BEST ALIAS EVER
+alias fucking='sudo'

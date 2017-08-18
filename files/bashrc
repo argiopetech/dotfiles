@@ -1,3 +1,4 @@
+#!/bin/bash
 # .bashrc
 
 # Source global definitions
@@ -24,17 +25,6 @@ export WINEARCH=win32 # Let's run wine as 32-bit
 #if [ -f /media/428A32E58A32D4DF/Xilinx/12.2/ISE_DS/setup-xlnx ]; then
 #    source /media/428A32E58A32D4DF/Xilinx/12.2/ISE_DS/setup-xlnx 2>&1 > /dev/null
 #fi
-
-alias l.="ls -d .*"
-alias ll="ls -l"
-alias mpv-anime="mpv --ass --embeddedfonts --sub-scale 0.7 --really-quiet --vd-lavc-fast"
-alias m='mpv'
-alias repos='find / -name ".git" -type d 2>/dev/null'
-alias emacs-cli="emacs --no-desktop"
-alias e="emacs -nw"
-alias emacsclient="emacsclient -c"
-alias stylish-haskell="stylish-haskell -c ~/.stylish-haskell.yml"
-alias pretty-core="ghc-core --no-asm --no-cast -- -dsuppress-var-kinds -dsuppress-type-applications -dsuppress-uniques"
 
 #function emacs() {
 #    if `bash ~/parent_find.sh .stack-work > /dev/null`; then
@@ -69,30 +59,10 @@ function hsless() {
     cat "${1}" | hscolor | less
 }
  
-alias cabalupgrades="cabal list --installed  | egrep -iv '(synopsis|homepage|license)'"
-alias jpegencode='mencoder -nosound "mf:/$1" -mf w=1920:h=1080:type=jpg:fps=10 -ovc lavc -lav
-copts vcodec=mpeg4:vbitrate=2160000 -o $2'
-alias mame='sdlmame -gl_glsl -video opengl -rp ~/.advance/rom/ -np 2 -nogl_vbo -nogl_pbo -waitvsync -mt'
-
-alias headphones='pacmd set-sink-port alsa_output.pci-0000_00_1b.0.analog-stereo analog-output-headphones'
-alias speakers='pacmd set-sink-port alsa_output.pci-0000_00_1b.0.analog-stereo analog-output-speaker'
 
 GPG_TTY=$(tty)
 export GPG_TTY
 
-alias dc='popd'
-alias flip='pushd'
-
-function cd()
-{
-  if [ $# -eq 0 ]; then
-    DIR="${HOME}"
-  else
-    DIR="$1"
-  fi
-
-  builtin pushd "${DIR}" > /dev/null
-}
 
 prefix() {
     if [ -z "$1" ]; then
@@ -138,7 +108,7 @@ export SCIPY_PIL_IMAGE_VIEWER=eog
 
 export EC2_PRIVATE_KEY=~/.ssh/pk-UY653PEPKS5XTNDA7NO27TR4SONMZ2SW.pem
 export EC2_CERT=~/.ssh/cert-UY653PEPKS5XTNDA7NO27TR4SONMZ2SW.pem
-# BEST ALIAS EVER
-alias fucking='sudo'
 
 . .bash_prompt
+. .bash_alias
+. .bash_cd
