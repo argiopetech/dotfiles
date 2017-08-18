@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Sets up Wine
+
+# Let's run wine as 32-bit
+export WINEARCH=win32
+
+prefix() {
+    if [ -z "$1" ]; then
+        echo "${HOME}/.wine/"
+    else
+        echo "${HOME}/.local/share/wineprefixes/$1"
+    fi
+}
+
+lsp() {
+    ls $* "${HOME}/.local/share/wineprefixes"
+}
+
+run() {
+    WINEPREFIX="$(prefix $1)" wine cmd /c "C:\\run-$1.bat"
+}
+
+complete -W "$(lsp)" prefix run
