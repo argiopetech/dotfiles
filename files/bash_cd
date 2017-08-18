@@ -1,8 +1,22 @@
 #!/bin/bash
 
+# Implements various modifications to standard directory functions.
+
+# Specifically, this turns changing directories into a completely reversible
+# operation by default.
+
+# The opposite of 'cd'. Goes to the previous directory and forgets the current
+# directory.
 alias dc='popd'
+
+# Flips the previous directory with the current directory, making 'pwd' the
+# previous directory and 'cd'ing to the old previous directory.
 alias flip='pushd'
 
+# Overrides the builtin 'cd' to establish a chain of directories.
+#
+# Requires a function to maintain standard 'cd' functionality (i.e., 'cd' with
+# no paramater goes to ${HOME})
 function cd()
 {
   if [ $# -eq 0 ]; then

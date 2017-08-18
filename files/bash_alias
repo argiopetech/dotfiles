@@ -7,10 +7,13 @@ alias ll="ls -l"
 # Convenient 'git' abbreviations
 alias add="git add"
 alias commit="git commit"
+alias status="git status"
 
+# Typing 'mpv' is so inconvenient...
 alias m='mpv'
 
-
+# Finds all the git repos on the system
+# Not sure why I have this, but it's kinda cool.
 alias repos='find / -name ".git" -type d 2>/dev/null'
 
 # Runs emacs in terminal mode
