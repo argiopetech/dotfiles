@@ -57,3 +57,4 @@ export EC2_CERT=~/.ssh/cert-UY653PEPKS5XTNDA7NO27TR4SONMZ2SW.pem
 . ${HOME}/.bash_prompt
 . ${HOME}/.bash_wine
 . ${HOME}/.bash_completion
+. ${HOME}/.bash_less
