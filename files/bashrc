@@ -70,10 +70,20 @@ export SCIPY_PIL_IMAGE_VIEWER=eog
 export EC2_PRIVATE_KEY=~/.ssh/pk-UY653PEPKS5XTNDA7NO27TR4SONMZ2SW.pem
 export EC2_CERT=~/.ssh/cert-UY653PEPKS5XTNDA7NO27TR4SONMZ2SW.pem
 
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
 . ${HOME}/.bash_alias
 . ${HOME}/.bash_cd
 . ${HOME}/.bash_haskell
 . ${HOME}/.bash_prompt
 #. ${HOME}/.bash_wine
-. ${HOME}/.bash_completion
 . ${HOME}/.bash_less
