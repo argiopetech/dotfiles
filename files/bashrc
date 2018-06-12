@@ -87,3 +87,4 @@ fi
 . ${HOME}/.bash_prompt
 #. ${HOME}/.bash_wine
 . ${HOME}/.bash_less
+. ${HOME}/.bash_dircolors
