@@ -10,8 +10,10 @@
 ;(package-install 'zenburn-theme)
 ;(package-install 'auto-complete-clang)
 ;(package-install 'yaml-mode)
+;(package-install 'rainbow-delimiters)
 
 (setq flycheck-check-syntax-automatically '(mode-enabled save))
+(setq flycheck-clang-args (list "-Wall" "-pedantic" "-std=c++11" "-fsyntax-only" "-fno-show-column" "-fno-color-diagnostics"))
 
 ;; Report to the window manager
 (setq frame-title-format "%f")
@@ -87,6 +89,10 @@
 (add-hook 'c++-mode-hook (lambda () (whitespace-mode t)))
 (add-hook 'java-mode-hook (lambda () (whitespace-mode t)))
 (add-hook 'haskell-mode-hook (lambda () (whitespace-mode t)))
+
+;; Rainbow parens
+(require 'rainbow-delimiters)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
 ;; Yesod setup
 ;;(require 'shakespeare-mode)
@@ -164,7 +170,7 @@
  '(make-backup-files nil)
  '(org-agenda-files (quote ("~/Projects/upenn/todo.org")))
  '(org-hierarchical-todo-statistics nil)
- '(package-selected-packages (quote (shakespeare-mode intero)))
+ '(package-selected-packages (quote (rainbow-delimiters shakespeare-mode intero)))
  '(safe-local-variable-values
    (quote
     ((haskell-indent-spaces . 4)
@@ -172,7 +178,7 @@
      (hamlet/basic-offset . 4))))
  '(show-paren-mode t)
  '(speedbar-default-position (quote right))
- '(whitespace-action nil)
+ '(whitespace-action (quote (auto-cleanup)))
  '(whitespace-line-column 800))
  
 (custom-set-faces
