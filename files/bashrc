@@ -35,6 +35,9 @@ shopt -s checkwinsize
 PATH=${HOME}/.local/bin:$PATH
 export PATH
 
+EDITOR=emacs
+export EDITOR
+
 # TeX setup
 export TEXINPUTS=".:$HOME/Documents/latex/:"
 export BIBINPUTS=".:$HOME/Documents/bibtex/:"
@@ -85,6 +88,6 @@ fi
 . ${HOME}/.bash_cd
 . ${HOME}/.bash_haskell
 . ${HOME}/.bash_prompt
-#. ${HOME}/.bash_wine
+. ${HOME}/.bash_wine
 . ${HOME}/.bash_less
 . ${HOME}/.bash_dircolors

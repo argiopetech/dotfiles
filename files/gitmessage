@@ -1,0 +1,21 @@
+# If applied, this commit will...
+# [Add/Fix/Remove/Update/Refactor/Document] [issue #id] [summary]
+
+
+# Why is it necessary? (Bug fix, feature, improvements?)
+-
+# How does the change address the issue? 
+-
+# What components does this change affect?
+-
+
+
+# Example:
+# Fix #16 missing CSS variables
+#
+# - Fix for unstyled elements
+# - Add background color, height for code blocks
+# - Only affects highlight class
+
+# Adapted from Vicky Lai - https://vickylai.com/verbose/git-commit-practices-your-future-self-will-thank-you-for/
+

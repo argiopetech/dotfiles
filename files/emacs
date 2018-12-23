@@ -11,15 +11,21 @@
 ;(package-install 'auto-complete-clang)
 ;(package-install 'yaml-mode)
 ;(package-install 'rainbow-delimiters)
+;(package-install 'cmake-mode)
 
+;; Disable bell
+(setq ring-bell-function 'ignore)
+
+;; Set up flycheck
 (setq flycheck-check-syntax-automatically '(mode-enabled save))
-(setq flycheck-clang-args (list "-Wall" "-pedantic" "-std=c++11" "-fsyntax-only" "-fno-show-column" "-fno-color-diagnostics"))
+(setq flycheck-clang-args (list "-Wall" "-pedantic" "-std=c++11" "-fsyntax-only" "-fno-color-diagnostics"))
 
 ;; Report to the window manager
 (setq frame-title-format "%f")
 (setq ghc-ghc-options '("-fdefer-type-errors"))
 
 (add-to-list 'auto-mode-alist '("/mutt" . flyspell-mode))
+(add-to-list 'auto-mode-alist '("\\.ipp\\'" . c++-mode))
 
 ;; Regular paths
 (add-to-list 'load-path "~/.emacs.d/loadables")
@@ -38,10 +44,14 @@
 (put 'upcase-region 'disabled nil)
 (setq-default fill-column 80)
 
+;; Setup minor modes that look like variables
+(global-auto-revert-mode)
+
 ;; Default theme
 (if window-system
     (load-theme `zenburn t)
-    (load-theme `zenburn-console t))
+    (load-theme `zenburn t))
+;    (load-theme `zenburn-console t))
 
 ;; Setup auto complete
 (require 'auto-complete-config)
@@ -67,17 +77,28 @@
 (require `agda-input)
 (intero-global-mode 1)
 (add-hook 'haskell-mode-hook (lambda ()
-			       (imenu-add-menubar-index)
-			       (flyspell-prog-mode)
-			       (setq-default fill-column 125)
-			       (set-input-method "Agda")))
+                               (imenu-add-menubar-index)
+                               (flyspell-prog-mode)
+                               (setq-default fill-column 125)
+                               (set-input-method "Agda")))
 
 
 ;; Outline mode
 (outline-minor-mode 1)
-(global-set-key [M-up] 'hide-sublevels)
-(global-set-key [M-down] 'show-all)
+(global-set-key [M-up] 'outline-hide-sublevels)
+(global-set-key [M-down] 'outline-show-all)
 
+;; Markdown mode
+(add-hook 'markdown-mode-hook (lambda ()
+                                (flyspell-mode t)
+                                (interactive)
+                                (flyspell-buffer)
+                                (global-set-key (kbd "<kp-0>") 'insert-ETR)
+                                (global-set-key (kbd "<kp-1>") 'insert-GradeLine)
+                                (global-set-key (kbd "<kp-2>") 'insert-HWRubric)
+                                (global-set-key (kbd "<kp-7>") 'insert-FullMarks)
+                                (global-set-key (kbd "<kp-8>") 'insert-PartialCredit)
+                                (global-set-key (kbd "<kp-9>") 'insert-NotAttempted)))
 
 ;; Custom key commands
 (global-set-key (kbd "<print>") 'goto-line) ;Scroll Lock key
@@ -87,7 +108,7 @@
 (require 'whitespace)
 (add-hook 'c-mode-hook (lambda () (whitespace-mode t)))
 (add-hook 'c++-mode-hook (lambda () (whitespace-mode t)))
-(add-hook 'java-mode-hook (lambda () (whitespace-mode t)))
+(add-hook 'jav-amode-hook (lambda () (whitespace-mode t)))
 (add-hook 'haskell-mode-hook (lambda () (whitespace-mode t)))
 
 ;; Rainbow parens
@@ -100,30 +121,71 @@
 ;(setq auto-mode-alist (cons '("\\.lucius$" . css-mode) auto-mode-alist))
 ;(setq auto-mode-alist (cons '("\\.hamlet$" . html-mode) auto-mode-alist))
 
-
-;; CMake setup
-; Add cmake listfile names to the mode list.
-(setq auto-mode-alist
-	  (append
-	   '(("CMakeLists\\.txt\\'" . cmake-mode))
-	   '(("\\.cmake\\'" . cmake-mode))
-	   auto-mode-alist))
-
-(autoload 'cmake-mode "~/.emacs.d/cmake-mode.el" t)
-
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 
-    ;(list "clang++" (list "-Wall" "-pedantic" "-std=c++11" "-fsyntax-only" "-fno-show-column" "-fno-color-diagnostics" local-file))))
-
 (global-set-key (kbd "C-c d") 'insert-date)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 
 (defun insert-date ()
   "Insert the current date. With prefix-argument, use ISO format. With
    two prefix arguments, write out the day and month name."
   (interactive)
   (insert (format-time-string "%Y-%m-%d")))
+
+(defun insert-ETR ()
+  "Insert **ETR** followed by yank"
+  (interactive)
+  (insert "\n    **ETR** ")
+  (yank)
+  (previous-line 1)
+  (move-end-of-line nil))
+
+(defun insert-GradeLine ()
+  "Go to the first line and insert an empty grade"
+  (goto-char (point-min))
+  (interactive)
+  (insert "Grade: \n")
+  (insert "Graded: ")
+  (insert-date)
+  (insert "\n\n---\n\n")
+  (previous-line 5)
+  (move-end-of-line nil))
+
+(defun insert-HWRubric ()
+  "Inserts the ERAU ISTA220/422 HW Rubric"
+  (interactive)
+  (insert-FilenameFooter)
+  (goto-char (point-min))
+  (insert "# Grading Rubric\n")
+  (insert "Graded: ")
+  (insert-date)
+  (insert "\n\n")
+  (insert "Criteria             | Rating\n")
+  (insert "---------------------|-------\n")
+  (insert "Basic Knowledge      | \n")
+  (insert "Developing Knowledge | \n")
+  (insert "Advanced Knowledge   | \n\n")
+  (insert "---\n\n")
+  (previous-line 6)
+  (move-end-of-line nil))
+
+(defun insert-FullMarks () (interactive) (insert "FM") (next-line) (move-end-of-line nil))
+(defun insert-PartialCredit () (interactive) (insert "PC") (next-line) (move-end-of-line nil))
+(defun insert-NotAttempted () (interactive) (insert "NA") (next-line) (move-end-of-line nil))
+
+(defun insert-FilenameFooter ()
+  (interactive)
+  (goto-char (point-max))
+  (insert "\n\n\\vfill"
+          "\n\n---\n\n"
+          "Rendered from `"
+          (file-name-nondirectory buffer-file-name) "`\n"))
+
+(global-set-key (kbd "<kp-add>") (lambda () (interactive) (ibuffer) (next-line) (ibuffer-visit-buffer)))
+
+;(set-face-attribute 'default nil :height 55)
 
 ;; Automatically set variables
 (custom-set-variables
@@ -170,7 +232,9 @@
  '(make-backup-files nil)
  '(org-agenda-files (quote ("~/Projects/upenn/todo.org")))
  '(org-hierarchical-todo-statistics nil)
- '(package-selected-packages (quote (rainbow-delimiters shakespeare-mode intero)))
+ '(package-selected-packages
+   (quote
+    (csharp-mode markdown-mode cmake-mode rainbow-delimiters shakespeare-mode intero)))
  '(safe-local-variable-values
    (quote
     ((haskell-indent-spaces . 4)
@@ -180,7 +244,7 @@
  '(speedbar-default-position (quote right))
  '(whitespace-action (quote (auto-cleanup)))
  '(whitespace-line-column 800))
- 
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

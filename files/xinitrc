@@ -1,0 +1,28 @@
+SCREENS=`xrandr -q | grep connected | grep -v disconnected | wc -l`
+
+if [ $SCREENS -eq 3 ]; then
+    . ~/lowdpi_triple.sh
+elif [ $SCREENS -eq 2 ]; then
+    . ~/lowdpi_double.sh
+else
+    xrandr -q | grep connected | grep -v disconnected | grep -v DP-0 | awk '{ print $1; }' | xargs -n 1 -I_ xrandr --output _ --off --auto
+    . ~/hidpi.sh
+fi
+
+# Set the desktop background with a stock Pop_OS image
+# Necessary to prevent window ghosts, and it looks pretty
+#hsetroot -fill /usr/share/backgrounds/System76-Old_Man_Smoked_His_Pipe-by_Ian_Hex_of_LightSweep.jpg
+
+# Sets up volume keys
+xbindkeys
+
+# Ensures a pointy cursor appears when it would otherwise be the X11 cursor
+xsetroot -cursor_name left_ptr
+
+# Makes the "compose" key work
+setxkbmap -option compose:menu
+
+# Makes transparency (for e.g., terminals) work
+xcompmgr &
+
+exec xmonad

@@ -2,11 +2,6 @@
 
 # Sets up Haskell
 
-# Adds cabal's install directories to the PATH for both the user and local
-# directories. This may not be safe if you don't trust your local paths.
-PATH=./cabal-dev/bin:$HOME/.cabal/bin:$PATH
-export PATH
-
 # Unregisters broken GHC packages. Run this a few times to resolve dependency
 # rot in installed packages.
 # ghc-pkg-clean -f cabal/dev/packages*.conf also works.

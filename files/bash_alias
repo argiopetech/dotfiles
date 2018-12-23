@@ -2,6 +2,7 @@
 
 # Convenient 'ls' abbreviations
 alias l.="ls -d .*"
+alias sl="ls"
 alias ll="ls -l"
 alias lla="ls -al"
 

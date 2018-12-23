@@ -2,12 +2,23 @@
 	email = elliot.robinson@argiopetech.com
 	name = Elliot Robinson
 
+[core]
+        editor = "emacs -nw"
+
 [merge]
+	ff = only
         tool = meld
+
+[pull]
+	ff = only
+        rebase = true
+
+[rerere]
+	enabled = true
 
 [alias]
         plog = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
         curr = rev-parse HEAD
 
-[core]
-        editor = "emacs -nw"
+[commit]
+	template = /home/elliot/.gitmessage
