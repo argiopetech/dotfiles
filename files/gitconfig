@@ -25,3 +25,7 @@
 
 [push]
         followTags = true
+
+[sendemail]
+	verify = off
+	annotate = yes
