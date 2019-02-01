@@ -24,6 +24,9 @@
 [commit]
 	template = /home/elliot/.gitmessage
 
+[tag]
+	template = /home/elliot/.gitmessage
+
 [push]
         followTags = true
 
