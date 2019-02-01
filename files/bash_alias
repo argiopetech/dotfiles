@@ -10,6 +10,7 @@ alias lla="ls -al"
 alias add="git add"
 alias commit="git commit"
 alias status="git status"
+alias atag="git tag -s"
 
 # Typing 'mpv' is so inconvenient...
 alias m='mpv'
