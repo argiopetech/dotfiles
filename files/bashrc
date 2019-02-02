@@ -94,3 +94,4 @@ fi
 . ${HOME}/.bash_wine
 . ${HOME}/.bash_less
 . ${HOME}/.bash_dircolors
+. ${HOME}/.bash_limbo
