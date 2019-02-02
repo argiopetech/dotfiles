@@ -6,6 +6,7 @@ case $- in
       *) return;;
 esac
 
+# Tell me about my current goals
 runhaskell ~/.local/bin/Goals.hs < ~/.goals
 
 # don't put duplicate lines or lines starting with space in the history.
