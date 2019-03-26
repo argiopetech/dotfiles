@@ -25,4 +25,7 @@ setxkbmap -option compose:menu
 # Makes transparency (for e.g., terminals) work
 xcompmgr &
 
+# Launch the notification daemon
+dunst&
+
 exec xmonad

@@ -45,6 +45,9 @@
 (setq-default fill-column 80)
 
 ;; Setup minor modes that look like variables
+(add-hook `after-revert-hook (lambda ()
+                               (interactive)
+                               (setq buffer-undo-list nil)))
 (global-auto-revert-mode)
 
 ;; Default theme
