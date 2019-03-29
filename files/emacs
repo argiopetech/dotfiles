@@ -29,6 +29,7 @@
 
 ;; Regular paths
 (add-to-list 'load-path "~/.emacs.d/loadables")
+(add-to-list 'load-path "~/.emacs.d/loadables/shm")
 
 ;; Theme paths
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
@@ -78,12 +79,14 @@
 
 ;; Setup Haskell
 (require `agda-input)
+(require `shm)
 (intero-global-mode 1)
 (add-hook 'haskell-mode-hook (lambda ()
                                (imenu-add-menubar-index)
                                (flyspell-prog-mode)
                                (setq-default fill-column 125)
-                               (set-input-method "Agda")))
+                               (set-input-method "Agda")
+                               (structured-haskell-mode)))
 
 
 ;; Outline mode
