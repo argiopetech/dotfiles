@@ -86,7 +86,8 @@
                                (flyspell-prog-mode)
                                (setq-default fill-column 125)
                                (set-input-method "Agda")
-                               (structured-haskell-mode)))
+                               (structured-haskell-mode)
+                               (haskell-indentation-mode -1)))
 
 
 ;; Outline mode
