@@ -130,6 +130,10 @@
 ;(setq auto-mode-alist (cons '("\\.lucius$" . css-mode) auto-mode-alist))
 ;(setq auto-mode-alist (cons '("\\.hamlet$" . html-mode) auto-mode-alist))
 
+;; Set up org-mode
+(require `org-table-move-single-cell)
+
+;; Custom functions, mostly for grading
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
